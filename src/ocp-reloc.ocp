@@ -1,0 +1,11 @@
+comp += [ "-g" "-w" "+1..39-4-9-37" ]
+
+begin library "ocp-reloc-lib"
+  files = [ "reloc.ml" ]
+  requires = [ "unix" ]
+end
+
+begin program "ocp-reloc"
+  files = [ "relocMain.ml" ]
+  requires = [ "ocp-reloc-lib" "cmdliner" ]
+end
