@@ -12,18 +12,20 @@
 (*                                                                        *)
 (**************************************************************************)
 
-let exec_magic_number = "Caml1999X008"
+let exec_magic_number = "Caml1999X0.."
 let len_magic_number = String.length exec_magic_number
+let check_len_magic_number = len_magic_number - 2
 let blocksize = 4096
 
 (* magic number is at the end *)
 let is_bytecode_exe ic =
-  let magic_number = Bytes.create len_magic_number in
+  let magic_number = Bytes.create check_len_magic_number in
   let pos_trailer = in_channel_length ic - len_magic_number in
   if pos_trailer < 0 then false else
     let _ = seek_in ic pos_trailer in
-    let _ = really_input ic magic_number 0 len_magic_number in
-    Bytes.to_string magic_number = exec_magic_number
+    let _ = really_input ic magic_number 0 check_len_magic_number in
+    Bytes.to_string magic_number =
+    String.sub exec_magic_number 0 check_len_magic_number
 
 let reloc new_interp verbose dry_run file =
   let stats = Unix.lstat file in
