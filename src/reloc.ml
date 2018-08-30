@@ -18,12 +18,12 @@ let blocksize = 4096
 
 (* magic number is at the end *)
 let is_bytecode_exe ic =
-  let magic_number = String.create len_magic_number in
+  let magic_number = Bytes.create len_magic_number in
   let pos_trailer = in_channel_length ic - len_magic_number in
   if pos_trailer < 0 then false else
     let _ = seek_in ic pos_trailer in
     let _ = really_input ic magic_number 0 len_magic_number in
-    magic_number = exec_magic_number
+    Bytes.to_string magic_number = exec_magic_number
 
 let reloc new_interp verbose dry_run file =
   let stats = Unix.lstat file in
@@ -66,7 +66,7 @@ let reloc new_interp verbose dry_run file =
     oc
   in
   output_string oc ("#!"^new_interp^"\n");
-  let buf = String.create blocksize in
+  let buf = Bytes.create blocksize in
   try while true do
     let n = input ic buf 0 blocksize in
     if n = 0 then raise Exit;
